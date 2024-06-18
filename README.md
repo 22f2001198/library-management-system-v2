@@ -7,3 +7,7 @@ git add . [to move modifications to staging area]
 git commit -m "any comment" [to commit the changes]
 git push [push the changes to git repo]/ git push -u origin main [for 1st time]
 git status [to check status]
+# venv in wsl 
+python3 -m venv {env name} [to create venv]
+. {env name}/bin/activate [to activate venv]
+deactivate [to deactivate]
