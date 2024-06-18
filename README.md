@@ -3,7 +3,7 @@ A Modern Application Development 2 project to make a simple
 library managemement system where readers can read books.
 # started local development
 # useful commands for git
-git add .
-git commit -m "any comment"
-git push
-git status
+git add . [to move modifications to staging area]
+git commit -m "any comment" [to commit the changes]
+git push [push the changes to git repo]/ git push -u origin main [for 1st time]
+git status [to check status]
