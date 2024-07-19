@@ -1,0 +1,14 @@
+.header{
+    text-align: center;
+    font-size: larger;
+    flex: content;
+    background-color: rgb(4, 179, 27);
+    color: azure;
+}
+.actions{
+    text-align: center;
+    font-size: large;
+}
+.text{
+    text-align: center;
+}

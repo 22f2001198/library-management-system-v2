@@ -9,5 +9,5 @@ def is_admin(func):
         current=get_jwt_identity()
         if current['role']=='admin':
             return func(*args,**kwargs)
-        return jsonify({'msg':'Access Denied'})
+        return jsonify({'message':'Access Denied'})
     return admin_auth
