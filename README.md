@@ -17,3 +17,4 @@ created backend login system.
 To create default admin hit [http GET :5000/admin] on another wsl terminal while server is running.
 completed frontend login system and now will continue to admin functionalities.
 added edit profile for both admin and user.
+created crud functions for sections.

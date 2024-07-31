@@ -1,19 +1,19 @@
-const Admin = {
+const Admin = Vue.component('Admin',{
     template: `
     <div>
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
-            <router-link to="/admin" class="navbar-brand">LMS-v2</router-link>
+            <a class="navbar-brand" @click="home">Home</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <router-link to="/admin" class="nav-link active" aria-current="page">Home</router-link>
+                    <a class="nav-link active" @click="home">Home</a>
                 </li>
                 <li class="nav-item">
-                    <router-link to="/admin/profile" class="nav-link active" aria-current="page">My Profile</router-link>
+                    <a class="nav-link active" @click="section">Section</a>
                 </li>
                 
                 <li class="nav-item">
@@ -40,9 +40,8 @@ const Admin = {
         <p><strong>Email:</strong> {{this.$store.state.User.email}}</p>
         <button type="submit" class="btn btn-primary" @click="editProfile">Edit</button>
         </div>
-        <div class="content">
-            <h2>Main content here.</h2>
-            <router-view />
+        <div>
+            <router-view></router-view>
         </div>
     </div>
     `,
@@ -56,6 +55,16 @@ const Admin = {
         this.$store.dispatch('fetchUser');
     },
     methods: {
+        home(){
+            if (this.$route.path != '/admin'){
+                this.$router.push('/admin');
+            }
+        },
+        section(){
+            if (this.$route.path != '/admin/sections'){
+                this.$router.push('/admin/sections');
+            }
+        },
         getCookie(name) {
             const value = `; ${document.cookie}`;
             const parts = value.split(`; ${name}=`);
@@ -90,6 +99,6 @@ const Admin = {
         }
     },
     
-}
+}) 
 
 export default Admin;

@@ -9,7 +9,7 @@ auth=Blueprint('auth',__name__)
 def home():
     admin1=User.query.filter(User.role=='admin').first()
     if not admin1:
-        new=User(user_name='admin',passhash=generate_password_hash('1234567890'),role='admin',name='Gaurav',email='gaurav@gmail.com')
+        new=User(username='admin',passhash=generate_password_hash('1234567890'),role='admin',name='Gaurav',email='gaurav@gmail.com')
         db.session.add(new)
         db.session.commit()
     return render_template('index.html')
@@ -27,7 +27,7 @@ def register():
         return jsonify({'message':'password length must be in between 8 to 12'}),401
     elif '@' not in email and '.com' not in email:
         return jsonify({'message':'Please use a valid email'}),401
-    new=User(user_name=username,passhash=generate_password_hash(password),role='user',name=name,email=email)
+    new=User(username=username,passhash=generate_password_hash(password),role='user',name=name,email=email)
     db.session.add(new)
     db.session.commit()
     return jsonify({'message':'registered successfully'}),200
@@ -36,12 +36,12 @@ def register():
 def login():
     username=request.json.get("username",None)
     password=request.json.get("password",None)
-    user=User.query.filter(User.user_name==username).first()
+    user=User.query.filter(User.username==username).first()
     if not user:
         return jsonify({'message':'User does not exist'}),404
-    elif user.user_name!=username or not check_password_hash(user.passhash,password):
+    elif user.username!=username or not check_password_hash(user.passhash,password):
         return jsonify({'message':'Wrong Credentials'}),401
-    resource={'id':user.user_id,'username':user.user_name,'role':user.role,'name':user.name,'email':user.email}
+    resource={'id':user.id,'username':user.name,'role':user.role,'name':user.name,'email':user.email}
     access_token=create_access_token(identity=resource)
     response=jsonify({'message':'login successful','data':resource})
     set_access_cookies(response,access_token)
@@ -60,8 +60,8 @@ def get_profile():
     current=get_jwt_identity()
     user=User.query.get(current['id'])
     user_data= {
-        'id':user.user_id,
-        'username':user.user_name,
+        'id':user.id,
+        'username':user.username,
         'name':user.name,
         'role':user.role,
         'email':user.email
@@ -85,7 +85,7 @@ def edit_profile():
     elif '@' not in email and '.com' not in email:
         return jsonify({'message':'Please use a valid email'}),401
     else:
-        exists.user_name=username
+        exists.username=username
         exists.password=generate_password_hash(password)
         exists.name=name
         exists.role=role

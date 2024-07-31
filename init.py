@@ -19,11 +19,13 @@ def create_app():
     from admin_routes import admin        #import components
     from user_routes import user
     from auth import auth
+    from common_routes import comm
     app.register_blueprint(auth,url_prefix='/')
     app.register_blueprint(admin,url_prefix='/')        #register blueprints
     app.register_blueprint(user,url_prefix='/')
+    app.register_blueprint(comm,url_prefix='/')
 
-    from models import User              #get db models
+    from models import User,Section              #get db models
     create_database(app)
     return app
 
