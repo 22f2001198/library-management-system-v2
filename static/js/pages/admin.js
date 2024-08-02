@@ -15,6 +15,9 @@ const Admin = Vue.component('Admin',{
                 <li class="nav-item">
                     <a class="nav-link active" @click="section">Section</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link active" @click="books">Books</a>
+                </li>
                 
                 <li class="nav-item">
                     <button class="btn btn-danger" @click="logout">Logout</button>
@@ -63,6 +66,11 @@ const Admin = Vue.component('Admin',{
         section(){
             if (this.$route.path != '/admin/sections'){
                 this.$router.push('/admin/sections');
+            }
+        },
+        books(){
+            if (this.$route.path != '/admin/books'){
+                this.$router.push('/admin/books');
             }
         },
         getCookie(name) {

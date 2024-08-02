@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
-from config import secret,project_db,jwt_secret_key,jwt_cookie_secure,jwt_token_location
+from config import secret,project_db,jwt_secret_key,jwt_cookie_secure,jwt_token_location,jwt_access_token_expires
 from os import path
 
 db=SQLAlchemy()          #db initialisation
@@ -13,6 +13,7 @@ def create_app():
     app.config['JWT_SECRET_KEY']=jwt_secret_key
     app.config['JWT_TOKEN_LOCATION']=jwt_token_location
     app.config['JWT_COOKIE_SECURE']=jwt_cookie_secure
+    app.config['JWT_ACCESS_TOKEN_EXPIRES']=jwt_access_token_expires
     db.init_app(app)
     jwt=JWTManager(app)    #jwt initialisation
 

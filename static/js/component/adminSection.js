@@ -2,6 +2,7 @@ const adminSection = Vue.component('adminSection',{
     template:`
     <div class="container">
     <h1>All Sections:</h1>
+    <div v-if="this.$store.state.Sections.length !== 0">
     <table class="table table-bordered" border="2px" border-color="black">
         <tbody>
             <tr>
@@ -20,6 +21,7 @@ const adminSection = Vue.component('adminSection',{
             </tr>
         </tbody>
     </table>
+    </div>
     <div v-if="this.$store.state.Sections.length == 0">
         No Sections created yet.
     </div>
@@ -29,11 +31,6 @@ const adminSection = Vue.component('adminSection',{
     `,
     data(){
         return{message:''}
-    },
-    computed:{
-        Sections(){
-            this.$store.getters.setSections;
-        }
     },
     async mounted(){
         this.$store.dispatch('fetchSections');
@@ -50,10 +47,8 @@ const adminSection = Vue.component('adminSection',{
             }
         },
         del(id){
-            if (confirm("Are you sure?")){
-                if (this.$route.path != '/delete/section/'+id){
-                    this.$router.push('/delete/section/'+id);
-                }
+            if (this.$route.path != '/delete/section/'+id){
+                this.$router.push('/delete/section/'+id);
             }
         }
     }

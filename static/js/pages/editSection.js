@@ -33,7 +33,8 @@ const editSection = {
         return{
             name:'',
             description:'',
-            message:''
+            message:'',
+            section:{}
         }
     },
     methods: {

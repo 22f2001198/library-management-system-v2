@@ -2,12 +2,12 @@ const store = new Vuex.Store({
     state : {
         User : '',
         Sections : [],
-        Section : '',
+        Books : [],
     },
     getters : {
         setUser : (state) => state.User,
         setSections : (state) => state.Sections,
-        setSection : (state) => state.Section,
+        setBooks : (state) => state.Books,
     },
     mutations : {
         setUser : (state,User) => {
@@ -16,9 +16,8 @@ const store = new Vuex.Store({
         setSections : (state,Sections) => {
             state.Sections = Sections;
         },
-
-        setSection : (state,Section) => {
-            state.Section = Section;
+        setBooks : (state,Books) => {
+            state.Books = Books;
         },
     },
     actions : {
@@ -38,12 +37,27 @@ const store = new Vuex.Store({
             const response = await fetch(url+'/section');
             if (response.ok){
                 const data = await response.json();
-                console.log('fetched sections');
+                console.log('fetched sections',data);
                 commit('setSections',data);
             } else {
+                const data = await response.json();
                 console.log('Failed to get sections.');
+                alert(data.message);
             }
         },
+        async fetchBooks({commit}){
+            const url = window.location.origin;
+            const response = await fetch(url+'/books');
+            if (response.ok){
+                const data = await response.json();
+                console.log('fetched books',data);
+                commit('setBooks',data);
+            } else {
+                const data = await response.json();
+                console.log('Failed to get books.');
+                alert(data.message);
+            }
+        }
     },
 });
 
