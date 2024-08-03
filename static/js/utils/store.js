@@ -3,11 +3,15 @@ const store = new Vuex.Store({
         User : '',
         Sections : [],
         Books : [],
+        Ratings : [],
+        Requests : [],
     },
     getters : {
         setUser : (state) => state.User,
         setSections : (state) => state.Sections,
         setBooks : (state) => state.Books,
+        setRatings : (state) => state.Ratings,
+        setRequests : (state) => state.Requests,
     },
     mutations : {
         setUser : (state,User) => {
@@ -18,6 +22,12 @@ const store = new Vuex.Store({
         },
         setBooks : (state,Books) => {
             state.Books = Books;
+        },
+        setRatings : (state,Ratings) => {
+            state.Ratings = Ratings;
+        },
+        setRequests : (state,Requests) => {
+            state.Requests = Requests;
         },
     },
     actions : {
@@ -57,7 +67,33 @@ const store = new Vuex.Store({
                 console.log('Failed to get books.');
                 alert(data.message);
             }
-        }
+        },
+        async fetchRatings({commit}){
+            const url = window.location.origin;
+            const response = await fetch(url+'/books/ratings');
+            if (response.ok){
+                const data = await response.json();
+                console.log('fetched ratings',data);
+                commit('setRatings',data);
+            } else {
+                const data = await response.json();
+                console.log('Failed to get ratings.');
+                alert(data.message);
+            }
+        },
+        async fetchRequests({commit}){
+            const url = window.location.origin;
+            const response = await fetch(url+'/requests');
+            if (response.ok){
+                const data = await response.json();
+                console.log('fetched requests',data);
+                commit('setRequests',data);
+            } else {
+                const data = await response.json();
+                console.log('Failed to get requests.');
+                alert(data.message);
+            }
+        },
     },
 });
 

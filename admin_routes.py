@@ -1,5 +1,5 @@
 from flask import Blueprint,request,jsonify
-from models import db,User,Section,Books
+from models import db,User,Section,Books,Requests
 from flask_jwt_extended import jwt_required,get_jwt_identity
 from aux_func import is_admin
 from datetime import datetime
@@ -88,3 +88,18 @@ def delete_book(bookid):
     db.session.delete(exists)
     db.session.commit()
     return jsonify({'message':'Deleted Successfully.'}),200
+
+@admin.route('/requests')
+@jwt_required()
+@is_admin
+def get_requests():
+    requests=Requests.query.all()
+    response=[]
+    for x in requests:
+        x={
+            'requestid':x.requestid,
+            'userid':x.id,
+            'bookid':x.bookid
+        }
+        response.append(x)
+    return jsonify(response),200

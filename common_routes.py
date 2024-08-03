@@ -29,11 +29,12 @@ def get_books():
     if len(books)==0:
         return jsonify({'message':'No books added yet.'}),404
     for x in books:
+        section=Section.query.filter(x.s_id==Section.id).first()
         x={
             'bookid':x.bookid,
             'name':x.name,
             'author':x.author,
-            'section':x.s_id,
+            'section':section.name,
         }
         response.append(x)
     return jsonify(response),200
@@ -50,4 +51,41 @@ def get_book(bookid):
         'section':section.name,
         'content':book.content
     }
+    return jsonify(response),200
+
+@comm.route('/search',methods=['POST'])
+@jwt_required()
+def search():
+    type = request.json.get('type')
+    query = request.json.get('query')
+    response=[]
+    if type == 'title':
+        results=Books.query.filter(Books.name.like('%'+query+'%')).all()
+    else:
+        results=Books.query.filter(Books.author.like('%'+query+'%')).all()
+    for x in results:
+        section=Section.query.filter(x.s_id==Section.id).first()
+        x={
+            'bookid':x.bookid,
+            'name':x.name,
+            'author':x.author,
+            'section':section.name,
+        }
+        response.append(x)
+    return jsonify(response),200
+
+@comm.route('/section/browse',methods=['POST'])
+@jwt_required()
+def browse_section():
+    section=request.json.get('section')
+    response=[]
+    books=Books.query.filter(section==Books.s_id).all()
+    for x in books:
+        x={
+            'bookid':x.bookid,
+            'name':x.name,
+            'author':x.author
+        }
+        response.append(x)
+    print(books)
     return jsonify(response),200

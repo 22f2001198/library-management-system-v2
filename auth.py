@@ -20,7 +20,7 @@ def register():
     password=request.json.get("password",None)
     name=request.json.get("name",None)
     email=request.json.get("email",None)
-    user1=User.query.filter(User.user_name==username).first()
+    user1=User.query.filter(User.username==username).first()
     if user1:
         return jsonify({'message':'User already exists'}),401
     elif len(password)<8 or len(password)>12:

@@ -1,4 +1,4 @@
-const adminBooks = Vue.component('adminBooks',{
+const userBook = Vue.component('userBook',{
     template:`
     <div class="container">
     <h1>All Books:</h1>
@@ -16,36 +16,30 @@ const adminBooks = Vue.component('adminBooks',{
                 <td>{{book.name}}</td>
                 <td>{{book.section}}</td>
                 <td>{{book.author}}</td>
-                <td><button class="btn btn-primary" @click="read(book.bookid)">Read</button><button class="btn btn-danger" @click="del(book.bookid)">Delete</button></td>
+                <td><button class="btn btn-primary" @click="rate(book.bookid)">Rate</button><button class="btn btn-success" @click="request(book.bookid)">Request</button></td>
             </tr>
         </table>
     </div>
     <div v-if="this.$store.state.Books.length === 0">
-    <p><strong>No Books added yet.</strong></p>
+    <p><strong>No Books found.</strong></p>
     </div>
-    <button class="btn btn-success" @click="add">+ Add new Book</button>
     </div>
     `,
     async mounted(){
         this.$store.dispatch('fetchBooks');
     },
-    methods: {
-        add(){
-            if (this.$route.path != '/add/book'){
-                this.$router.push('/add/book');
+    methods:{
+        rate(bookid){
+            if (this.$route.path != '/rate/book/'+bookid){
+                this.$router.push('/rate/book/'+bookid);
             }
         },
-        read(bookid){
-            if (this.$route.path != '/read/book/'+bookid){
-                this.$router.push('/read/book/'+bookid);
-            }
-        },
-        del(bookid){
-            if (this.$route.path != '/delete/book/'+bookid){
-                this.$router.push('/delete/book/'+bookid);
+        request(bookid){
+            if (this.$route.path != '/request/book/'+bookid){
+                this.$router.push('/request/book/'+bookid);
             }
         }
     },
 });
 
-export default adminBooks;
+export default userBook;

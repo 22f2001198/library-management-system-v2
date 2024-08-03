@@ -18,20 +18,15 @@ const Admin = Vue.component('Admin',{
                 <li class="nav-item">
                     <a class="nav-link active" @click="books">Books</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link active" @click="requests">Requests</a>
+                </li>
                 
                 <li class="nav-item">
                     <button class="btn btn-danger" @click="logout">Logout</button>
                 </li>
                 </ul>
-                <form class="d-flex" role="search">
-                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                    <option selected>Open this select menu</option>
-                    <option value="title">Title</option>
-                    <option value="author">Author</option>
-                </select>
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
+                <button class="btn btn-outline-success ms-auto" type="button" @click="search">Search</button>
             </div>
             </div>
         </nav>
@@ -71,6 +66,16 @@ const Admin = Vue.component('Admin',{
         books(){
             if (this.$route.path != '/admin/books'){
                 this.$router.push('/admin/books');
+            }
+        },
+        requests(){
+            if (this.$route.path != '/admin/requests'){
+                this.$router.push('/admin/requests');
+            }
+        },
+        search(){
+            if (this.$route.path != '/search/book'){
+                this.$router.push('/search/book');
             }
         },
         getCookie(name) {

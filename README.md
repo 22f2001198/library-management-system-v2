@@ -18,3 +18,6 @@ To create default admin hit [http GET :5000/admin] on another wsl terminal while
 completed frontend login system and now will continue to admin functionalities.
 added edit profile for both admin and user.
 created crud functions for sections.
+created crud functions for books.
+created search for both admin and users.
+created rate and request books for users.

@@ -10,21 +10,19 @@ const User = {
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <router-link to="/user" class="nav-link active" aria-current="page">Home</router-link>
+                    <a class="nav-link active" @click="home">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" @click="section">Section</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" @click="books">Books</a>
                 </li>
                 <li class="nav-item">
                     <button class="btn btn-danger" @click="logout">Logout</button>
                 </li>
                 </ul>
-                <form class="d-flex" role="search">
-                <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                    <option selected>Open this select menu</option>
-                    <option value="title">Title</option>
-                    <option value="author">Author</option>
-                </select>
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
+                <button class="btn btn-outline-success ms-auto" type="button" @click="search">Search</button>
             </div>
             </div>
         </nav>
@@ -36,9 +34,8 @@ const User = {
         <p><strong>Email:</strong> {{this.$store.state.User.email}}</p>
         <button type="submit" class="btn btn-primary" @click="editProfile">Edit</button>
         </div>
-        <div class="content">
-            <h2>Main content here.</h2>
-            <router-view />
+        <div>
+            <router-view></router-view>
         </div>
     </div>
     </div>
@@ -53,6 +50,26 @@ const User = {
         this.$store.dispatch('fetchUser');
     },
     methods: {
+        home(){
+            if (this.$route.path != '/user'){
+                this.$router.push('/user');
+            }
+        },
+        section(){
+            if (this.$route.path != '/user/sections'){
+                this.$router.push('/user/sections');
+            }
+        },
+        books(){
+            if (this.$route.path != '/user/books'){
+                this.$router.push('/user/books');
+            }
+        },
+        search(){
+            if (this.$route.path != '/search/user/book'){
+                this.$router.push('/search/user/book');
+            }
+        },
         getCookie(name) {
             const value = `; ${document.cookie}`;
             const parts = value.split(`; ${name}=`);

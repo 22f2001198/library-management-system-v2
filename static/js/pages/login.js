@@ -68,6 +68,9 @@ const Login={
                 console.log('Login Failed');
                 const data = await response.json();
                 alert(data.message);
+                if (this.$route.path != '/register'){
+                    this.$router.push('/register');
+                }
             }
         }
     }
