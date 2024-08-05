@@ -1,5 +1,6 @@
 from init import db
 from datetime import date
+import datetime
 
 class User(db.Model):
     __tablename__='user'
@@ -11,6 +12,7 @@ class User(db.Model):
     email=db.Column(db.String,nullable=False)
     review=db.relationship('Review',back_populates='user',cascade='all, delete-orphan')
     requests=db.relationship('Requests',back_populates='user',cascade='all, delete-orphan')
+    issued=db.relationship('Issued',back_populates='user',cascade='all, delete-orphan')
 
 class Section(db.Model):
     __tablename__='section'
@@ -31,6 +33,7 @@ class Books(db.Model):
     section=db.relationship('Section',back_populates='books')
     review=db.relationship('Review',back_populates='books',cascade='all, delete-orphan')
     requests=db.relationship('Requests',back_populates='books',cascade='all, delete-orphan')
+    issued=db.relationship('Issued',back_populates='books',cascade='all, delete-orphan')
 
 class Review(db.Model):
     __tablename__='review'
@@ -49,3 +52,12 @@ class Requests(db.Model):
     id=db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
     books=db.relationship('Books',back_populates='requests')
     user=db.relationship('User',back_populates='requests')
+
+class Issued(db.Model):
+    __tablename__='issued'
+    issueid=db.Column(db.Integer,primary_key=True,autoincrement=True)
+    bookid=db.Column(db.Integer,db.ForeignKey('books.bookid'),nullable=False)
+    id=db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
+    doi=db.Column(db.Date,default=datetime.date.today())
+    books=db.relationship('Books',back_populates='issued')
+    user=db.relationship('User',back_populates='issued')

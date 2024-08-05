@@ -1,5 +1,5 @@
 from flask import Blueprint,request,jsonify
-from models import db,User,Section,Books,Requests
+from models import db,User,Section,Books,Requests,Issued,Review
 from flask_jwt_extended import jwt_required,get_jwt_identity
 from aux_func import is_admin
 from datetime import datetime
@@ -96,10 +96,181 @@ def get_requests():
     requests=Requests.query.all()
     response=[]
     for x in requests:
+        user=User.query.get(x.id)
+        book=Books.query.get(x.bookid)
         x={
             'requestid':x.requestid,
-            'userid':x.id,
-            'bookid':x.bookid
+            'id':x.id,
+            'username':user.username,
+            'bookid':x.bookid,
+            'bookname':book.name
         }
         response.append(x)
     return jsonify(response),200
+
+@admin.route('/request/<int:requestid>',methods=['GET'])
+@jwt_required()
+@is_admin
+def get_request(requestid):
+    request=Requests.query.get(requestid)
+    response={
+        'requestid':request.requestid,
+        'id':request.id,
+        'bookid':request.bookid
+    }
+    return jsonify(response),200
+
+@admin.route('/request/reject/<int:requestid>',methods=['DELETE'])
+@jwt_required()
+@is_admin
+def reject_request(requestid):
+    request=Requests.query.get(requestid)
+    db.session.delete(request)
+    db.session.commit()
+    return jsonify({'message':'Request rejected.'}),200
+
+@admin.route('/book/issue/<int:id>/<int:bookid>',methods=['POST'])
+@jwt_required()
+@is_admin
+def issue_book(id,bookid):
+    book=Issued.query.filter(id==Issued.id,bookid==Issued.bookid).first()
+    requested=Requests.query.filter(id==Requests.id,bookid==Requests.bookid).first()
+    availablity=Books.query.get(bookid)
+    if book:
+        return jsonify({'message':'This Book is already issued to you.'}),405
+    if availablity.available==False:
+        return jsonify({'message':'This Book is already issued to someone.'}),404
+    date_str=request.json.get('doi')
+    doi=datetime.strptime(date_str,'%Y-%m-%d').date()
+    new=Issued(id=id,bookid=bookid,doi=doi)
+    availablity.available=False
+    db.session.add(new)
+    db.session.delete(requested)
+    db.session.commit()
+    return jsonify({'message':'Book issued.'}),200
+
+@admin.route('/issued')
+@jwt_required()
+@is_admin
+def get_issued():
+    issued=Issued.query.all()
+    response=[]
+    for x in issued:
+        user=User.query.get(x.id)
+        book=Books.query.get(x.bookid)
+        x={
+            'issueid':x.issueid,
+            'id':x.id,
+            'username':user.username,
+            'bookid':x.bookid,
+            'book':book.name,
+            'doi':x.doi
+        }
+        response.append(x)
+    return jsonify(response),200
+
+@admin.route('/book/revoke/<int:bookid>',methods=['DELETE'])
+@jwt_required()
+@is_admin
+def revoke_book(bookid):
+    to_revoke=Issued.query.get(bookid)
+    db.session.delete(to_revoke)
+    book=Books.query.get(bookid)
+    book.available=True
+    db.session.commit()
+    return jsonify({'message':'Book revoked.'}),200
+
+@admin.route('/users')
+@jwt_required()
+@is_admin
+def get_users():
+    role='user'
+    users=User.query.filter(role==User.role).all()
+    response=[]
+    for x in users:
+        x={
+            'id':x.id,
+            'username':x.username,
+            'name':x.name,
+            'role':x.role,
+            'email':x.email
+        }
+        response.append(x)
+    return jsonify(response),200
+
+@admin.route('/user/<int:id>')
+@jwt_required()
+@is_admin
+def get_user(id):
+    user=User.query.get(id)
+    response={
+        'id':user.id,
+        'username':user.username,
+        'name':user.name,
+        'role':user.role,
+        'email':user.email
+    }
+    return jsonify(response),200
+
+@admin.route('/user/ratings/<int:id>')
+@jwt_required()
+@is_admin
+def get_user_ratings(id):
+    ratings=Review.query.filter(id==Review.id).all()
+    response=[]
+    for x in ratings:
+        book=Books.query.get(x.bookid)
+        x={
+            'reviewid':x.reviewid,
+            'id':x.id,
+            'bookid':x.bookid,
+            'book':book.name,
+            'rating':x.rating,
+            'comment':x.comment
+        }
+        response.append(x)
+    return jsonify(response),200
+
+@admin.route('/user/requests/<int:id>')
+@jwt_required()
+@is_admin
+def get_user_requests(id):
+    requests=Requests.query.filter(id==Requests.id).all()
+    response=[]
+    for x in requests:
+        book=Books.query.get(x.bookid)
+        x={
+            'requestid':x.requestid,
+            'id':x.id,
+            'bookid':x.bookid,
+            'book':book.name
+        }
+        response.append(x)
+    return jsonify(response),200
+
+@admin.route('/user/issued/<int:id>')
+@jwt_required()
+@is_admin
+def get_user_issued(id):
+    issued=Issued.query.filter(id==Issued.id).all()
+    response=[]
+    for x in issued:
+        book=Books.query.get(x.bookid)
+        x={
+            'issueid':x.issueid,
+            'id':x.id,
+            'bookid':x.bookid,
+            'book':book.name,
+            'doi':x.doi
+        }
+        response.append(x)
+    return jsonify(response),200
+
+@admin.route('/user/ban/<int:id>',methods=['DELETE'])
+@jwt_required()
+@is_admin
+def ban_user(id):
+    user=User.query.get(id)
+    db.session.delete(user)
+    db.session.commit()
+    return jsonify({'message':'User banned.'}),200

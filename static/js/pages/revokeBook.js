@@ -1,49 +1,29 @@
-const readBook = {
+const revokeBook = {
     template:`
     <div class="card">
         <div class="card-body">
             <div class="d-flex justify-content-end">
                 <button type="button" class="btn-close" aria-label="Close" @click="close"></button>
               </div>
-              <h1>Read Book: {{book.bookid}}</h1>
-              <br>
-              <h3>{{book.name}}</h3>
-              <br>
-              <strong>Written By:</strong> {{book.author}}
-              <br>
-              <strong>Section:</strong> {{book.section}}
-              <br>
-              <strong>Content:</strong><br>
-              <p>{{book.content}}</p><br>
-              <div v-if="this.$store.state.User.role === 'admin'"><button class="btn btn-primary" @click="edit(book.bookid)">Edit</button></div>
+              <h1>Revoke Book:</h1>
+              <p><strong>Are you sure you want to revoke this book?</strong></p>
+              <button class="btn btn-danger" @click="revoke">Confirm</button>
             </div>
         </div>
     `,
     data(){
         return{
-            book:{},
+            book : {},
+            message : ''
         }
     },
     async mounted(){
         this.fetchBook();
-        this.$store.dispatch('fetchUser');
     },
     methods:{
         close(){
-            if (this.$store.state.User.role === 'admin'){
-                if (this.$route.path != '/admin/books'){
-                    this.$router.push('/admin/books');
-                }
-            } else {
-                if (this.$route.path != '/user/mybooks'){
-                    this.$router.push('/user/mybooks');
-                }
-            }
-            
-        },
-        edit(bookid){
-            if (this.$route.path != '/edit/book/'+bookid){
-                this.$router.push('/edit/book/'+bookid);
+            if (this.$route.path != '/admin/issued'){
+                this.$router.push('/admin/issued');
             }
         },
         getCookie(name) {
@@ -67,8 +47,28 @@ const readBook = {
             } else {
                 console.log('failed to get book.');
             }
-        }
+        },
+        async revoke(){
+            const url = window.location.origin;
+            const response = await fetch(url+'/book/revoke/'+this.$route.params.bookid,{
+                method:'DELETE',
+                headers:{
+                    'X-CSRF-TOKEN':this.getCookie('csrf_access_token'),
+                    'Content-Type':'application/json',
+                },
+            });
+            if (response.ok){
+                const data = await response.json();
+                console.log('revoked Book',data);
+                alert(data.message);
+                if (this.$route.path != '/admin/issued'){
+                    this.$router.push('/admin/issued');
+                }
+            } else {
+                console.log('Failed to revoke.');
+            }
+        },
     }
 }
 
-export default readBook;
+export default revokeBook;

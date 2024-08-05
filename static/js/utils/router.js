@@ -21,6 +21,16 @@ import browseSection from "../pages/browseSection.js";
 import rateBook from "../pages/rateBook.js";
 import requestBook from "../pages/requestBook.js";
 import adminRequests from "../component/adminRequests.js";
+import rejectRequest from "../pages/rejectRequest.js";
+import issueBook from "../pages/issueBook.js";
+import adminIssued from "../component/adminIssued.js";
+import revokeBook from "../pages/revokeBook.js";
+import adminUsers from "../component/adminUsers.js";
+import reviewUser from "../pages/reviewUser.js";
+import userDetails from "../pages/userDetails.js";
+import banUser from "../pages/banUser.js";
+import myBooks from "../component/userBooks.js";
+import returnBook from "../pages/returnBook.js";
 
 const routes=[
     {path:"/", component:Home},
@@ -29,11 +39,14 @@ const routes=[
     {path:"/admin", component:Admin, children:[
         {path:"/admin/sections", component:adminSection},
         {path:"/admin/books", component:adminBooks},
-        {path:"/admin/requests",component:adminRequests}
+        {path:"/admin/requests",component:adminRequests},
+        {path:"/admin/issued",component:adminIssued},
+        {path:"/admin/users",component:adminUsers}
     ]},
     {path:"/user", component:User, children:[
         {path:"/user/sections", component:userSection},
-        {path:"/user/books", component:userBook}
+        {path:"/user/books", component:userBook},
+        {path:"/user/mybooks",component:myBooks}
     ]},
     {path:"/edit/profile",component:EditProfile},
     {path:"/add/section",component:addSection},
@@ -47,7 +60,14 @@ const routes=[
     {path:"/search/user/book",component:searchFormU},
     {path:"/browse/section",component:browseSection},
     {path:"/rate/book/:bookid",component:rateBook},
-    {path:"/request/book/:bookid",component:requestBook}
+    {path:"/request/book/:bookid",component:requestBook},
+    {path:"/reject/request/:requestid",component:rejectRequest},
+    {path:"/issue/book/:id/:bookid",component:issueBook},
+    {path:"/revoke/book/:bookid",component:revokeBook},
+    {path:"/review/user/:id",component:reviewUser},
+    {path:"/details/user/:id",component:userDetails},
+    {path:"/ban/user/:id",component:banUser},
+    {path:"/return/book/:bookid",component:returnBook}
 ]
 
 const router = new VueRouter({

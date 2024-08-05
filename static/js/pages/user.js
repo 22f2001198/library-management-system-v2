@@ -19,6 +19,9 @@ const User = {
                     <a class="nav-link active" @click="books">Books</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link active" @click="mybooks">My Books</a>
+                </li>
+                <li class="nav-item">
                     <button class="btn btn-danger" @click="logout">Logout</button>
                 </li>
                 </ul>
@@ -63,6 +66,11 @@ const User = {
         books(){
             if (this.$route.path != '/user/books'){
                 this.$router.push('/user/books');
+            }
+        },
+        mybooks(){
+            if (this.$route.path != '/user/mybooks'){
+                this.$router.push('/user/mybooks');
             }
         },
         search(){

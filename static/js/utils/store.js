@@ -4,7 +4,7 @@ const store = new Vuex.Store({
         Sections : [],
         Books : [],
         Ratings : [],
-        Requests : [],
+        Requests : []
     },
     getters : {
         setUser : (state) => state.User,

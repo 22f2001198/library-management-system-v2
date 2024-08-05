@@ -1,5 +1,5 @@
 from flask import Blueprint,request,jsonify
-from models import db,User,Review,Requests,Books
+from models import db,User,Review,Requests,Books,Issued
 from flask_jwt_extended import jwt_required,get_jwt_identity
 
 user=Blueprint('user',__name__)
@@ -37,9 +37,39 @@ def request_book(bookid):
     if requested:
         return jsonify({'message':'youchave already requested this book.'}),401
     requested_books=Requests.query.filter(user==Requests.id).all()
-    if len(requested_books)>5:
+    issued_books=Issued.query.filter(user==Issued.id).all()
+    if len(requested_books)+len(issued_books)>5:
         return jsonify({'message':'you can not request more than 5 books.'}),401
     requested_book=Requests(id=user,bookid=bookid)
     db.session.add(requested_book)
     db.session.commit()
     return jsonify({'message':'requested successfully.'}),200
+
+@user.route('/mybooks')
+@jwt_required()
+def my_books():
+    current=get_jwt_identity()
+    user=current['id']
+    mybooks=Issued.query.filter(user==Issued.id).all()
+    response=[]
+    for x in mybooks:
+        book=Books.query.get(x.bookid)
+        x={
+            'issueid':x.issueid,
+            'id':x.id,
+            'bookid':x.bookid,
+            'book':book.name,
+            'doi':x.doi
+        }
+        response.append(x)
+    return jsonify(response),200
+
+@user.route('/book/return/<int:bookid>',methods=['DELETE'])
+@jwt_required()
+def return_book(bookid):
+    to_return=Issued.query.filter(bookid==Issued.bookid).first()
+    book=Books.query.get(bookid)
+    db.session.delete(to_return)
+    book.available=True
+    db.session.commit()
+    return jsonify({'message':'Book returned.'}),200
