@@ -22,3 +22,4 @@ created crud functions for books.
 created search for both admin and users.
 created rate and request books for users.
 completed admin and user functionalities.
+created homepages for user and admin respectively.

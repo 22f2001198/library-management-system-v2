@@ -3,6 +3,10 @@ from models import db,User,Section,Books,Requests,Issued,Review
 from flask_jwt_extended import jwt_required,get_jwt_identity
 from aux_func import is_admin
 from datetime import datetime
+import os
+from sqlalchemy import desc
+import matplotlib.pyplot as plt
+plt.switch_backend('agg')
 
 admin=Blueprint('admin',__name__)
 
@@ -274,3 +278,37 @@ def ban_user(id):
     db.session.delete(user)
     db.session.commit()
     return jsonify({'message':'User banned.'}),200
+
+@admin.route('/test')
+@jwt_required()
+@is_admin
+def avg_ratings():
+    books=Books.query.all()
+    comments=Review.query.order_by(desc(Review.rating)).limit(5)
+    d={}
+    for x in books:
+        book=Review.query.filter(x.bookid==Review.bookid).all()
+        sum=0
+        count=1
+        for y in book:
+            sum+=y.rating
+            count+=1
+        if count>0:
+            d[x.name]=(sum/count)
+    l1=list(d.keys())
+    l2=list(d.values())
+    plt.barh(l1,l2)
+    plt.xlabel('Rating')
+    plt.ylabel('books')
+    plt.title('Book Ratings')
+    plt.savefig('static/ratings.png')
+    response=[]
+    for x in comments:
+        user=User.query.get(x.id)
+        x={
+            'id':x.id,
+            'user':user.username,
+            'comment':x.comment
+        }
+        response.append(x)
+    return jsonify(response),200

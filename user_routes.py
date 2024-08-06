@@ -1,5 +1,5 @@
 from flask import Blueprint,request,jsonify
-from models import db,User,Review,Requests,Books,Issued
+from models import db,User,Review,Requests,Books,Issued,Section
 from flask_jwt_extended import jwt_required,get_jwt_identity
 
 user=Blueprint('user',__name__)
@@ -73,3 +73,50 @@ def return_book(bookid):
     book.available=True
     db.session.commit()
     return jsonify({'message':'Book returned.'}),200
+
+@user.route('/popular')
+@jwt_required()
+def get_popular():
+    popular=Review.query.order_by(Review.rating).limit(5)
+    response=[]
+    for x in popular:
+        book=Books.query.get(x.bookid)
+        section=Section.query.filter(book.s_id==Section.id).first()
+        x={
+            'bookid':x.bookid,
+            'name':book.name,
+            'section':section.name,
+            'author':book.author
+        }
+        response.append(x)
+    return jsonify(response),200
+
+@user.route('/latest')
+@jwt_required()
+def get_latest():
+    latest=Books.query.order_by(Books.bookid).limit(5)
+    response=[]
+    for x in latest:
+        section=Section.query.filter(x.s_id==Section.id).first()
+        x={
+            'bookid':x.bookid,
+            'name':x.name,
+            'section':section.name,
+            'author':x.author
+        }
+        response.append(x)
+    return jsonify(response),200
+
+@user.route('/comments')
+@jwt_required()
+def get_comments():
+    comments=Review.query.order_by(Review.rating).limit(5)
+    response=[]
+    for x in comments:
+        user=User.query.get(x.id)
+        x={
+            'user':user.username,
+            'comment':x.comment
+        }
+        response.append(x)
+    return jsonify(response),200

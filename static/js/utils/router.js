@@ -31,12 +31,15 @@ import userDetails from "../pages/userDetails.js";
 import banUser from "../pages/banUser.js";
 import myBooks from "../component/userBooks.js";
 import returnBook from "../pages/returnBook.js";
+import adminHome from "../component/adminHome.js";
+import userHome from "../component/userHome.js";
 
 const routes=[
     {path:"/", component:Home},
     {path:"/login", component:Login},
     {path:"/register", component:Register},
     {path:"/admin", component:Admin, children:[
+        {path:"/admin",component:adminHome},
         {path:"/admin/sections", component:adminSection},
         {path:"/admin/books", component:adminBooks},
         {path:"/admin/requests",component:adminRequests},
@@ -44,6 +47,7 @@ const routes=[
         {path:"/admin/users",component:adminUsers}
     ]},
     {path:"/user", component:User, children:[
+        {path:"/user",component:userHome},
         {path:"/user/sections", component:userSection},
         {path:"/user/books", component:userBook},
         {path:"/user/mybooks",component:myBooks}
