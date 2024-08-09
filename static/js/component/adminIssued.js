@@ -11,6 +11,7 @@ const adminIssued = Vue.component('adminIssued',{
                 <th>Book ID</th>
                 <th>Book</th>
                 <th>Issue Date</th>
+                <th>Return Date</th>
                 <th>Actions</th>
             </tr>
             <tr v-for="issue in this.Issued" :key="issue.issueid">
@@ -20,6 +21,7 @@ const adminIssued = Vue.component('adminIssued',{
                 <td>{{issue.bookid}}</td>
                 <td>{{issue.book}}</td>
                 <td>{{issue.doi}}</td>
+                <td>{{issue.dor}}</td>
                 <td><button class="btn btn-danger" @click="revoke(issue.bookid)">Revoke</button></td>
             </tr>
         </table>

@@ -1,11 +1,23 @@
-from flask import Blueprint,request,jsonify
+from flask import Blueprint,request,jsonify,make_response
 from flask_jwt_extended import jwt_required
 from models import db,Section,Books
+from init import cache
+import datetime
+from task import add,async_job
+from celery.result import AsyncResult
+import csv
+import io
 
 comm=Blueprint('comm',__name__)
 
+@comm.route('/cache')
+@cache.cached(timeout=2)
+def demo():
+    return jsonify({'data':datetime.datetime.now()})
+
 @comm.route('/section')
 @jwt_required()
+@cache.cached(timeout=2)
 def get_sections():
     sections=Section.query.all()
     response=[]
@@ -23,6 +35,7 @@ def get_sections():
 
 @comm.route('/books')
 @jwt_required()
+@cache.cached(timeout=2)
 def get_books():
     books=Books.query.all()
     response=[]
@@ -89,3 +102,35 @@ def browse_section():
         response.append(x)
     print(books)
     return jsonify(response),200
+
+@comm.route('/celerydemo')
+def celerydemo():
+    task=add.delay(10,20)
+    return jsonify({'taskid':task.id})
+
+@comm.route('/task/<taskid>')
+def get_task(taskid):
+    result=AsyncResult(taskid)
+    if result.ready():
+        return jsonify({'result':result.result}),200
+    return jsonify({'message':'task not ready.'}),404
+
+@comm.route('/report')
+def get_report():
+    task=async_job.delay()
+    result=task.get()
+    return result,200
+
+@comm.route('/report/download')
+def download_report():
+    with open('admin_report.csv','r') as file:
+        csvreader=csv.reader(file)
+        csvdata=list(csvreader)
+        csvbuffer=io.StringIO()
+        csvwriter=csv.writer(csvbuffer)
+        csvwriter.writerows(csvdata)
+        print(csvbuffer.getvalue())
+    response=make_response(csvbuffer.getvalue())
+    response.headers['Content-Disposition']='attachment;filename=report.csv'
+    response.headers['Content-Type']='text/csv'
+    return response

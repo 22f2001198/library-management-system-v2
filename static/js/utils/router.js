@@ -33,6 +33,7 @@ import myBooks from "../component/userBooks.js";
 import returnBook from "../pages/returnBook.js";
 import adminHome from "../component/adminHome.js";
 import userHome from "../component/userHome.js";
+import adminReport from "../component/adminReport.js";
 
 const routes=[
     {path:"/", component:Home},
@@ -44,7 +45,8 @@ const routes=[
         {path:"/admin/books", component:adminBooks},
         {path:"/admin/requests",component:adminRequests},
         {path:"/admin/issued",component:adminIssued},
-        {path:"/admin/users",component:adminUsers}
+        {path:"/admin/users",component:adminUsers},
+        {path:"/admin/report",component:adminReport}
     ]},
     {path:"/user", component:User, children:[
         {path:"/user",component:userHome},

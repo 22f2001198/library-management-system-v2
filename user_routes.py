@@ -1,6 +1,7 @@
 from flask import Blueprint,request,jsonify
 from models import db,User,Review,Requests,Books,Issued,Section
 from flask_jwt_extended import jwt_required,get_jwt_identity
+from init import cache
 
 user=Blueprint('user',__name__)
 
@@ -76,6 +77,7 @@ def return_book(bookid):
 
 @user.route('/popular')
 @jwt_required()
+@cache.cached(timeout=2)
 def get_popular():
     popular=Review.query.order_by(Review.rating).limit(5)
     response=[]
@@ -93,6 +95,7 @@ def get_popular():
 
 @user.route('/latest')
 @jwt_required()
+@cache.cached(timeout=2)
 def get_latest():
     latest=Books.query.order_by(Books.bookid).limit(5)
     response=[]
@@ -109,6 +112,7 @@ def get_latest():
 
 @user.route('/comments')
 @jwt_required()
+@cache.cached(timeout=2)
 def get_comments():
     comments=Review.query.order_by(Review.rating).limit(5)
     response=[]

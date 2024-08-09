@@ -27,6 +27,9 @@ const Admin = Vue.component('Admin',{
                 <li class="nav-item">
                     <a class="nav-link active" @click="users">Users</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link active" @click="report">Report</a>
+                </li>
                 
                 <li class="nav-item">
                     <button class="btn btn-danger" @click="logout">Logout</button>
@@ -87,6 +90,11 @@ const Admin = Vue.component('Admin',{
         users(){
             if (this.$route.path != '/admin/users'){
                 this.$router.push('/admin/users');
+            }
+        },
+        report(){
+            if (this.$route.path != '/admin/report'){
+                this.$router.push('/admin/report');
             }
         },
         search(){

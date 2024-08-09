@@ -1,9 +1,9 @@
 from flask import Blueprint,request,jsonify
 from models import db,User,Section,Books,Requests,Issued,Review
 from flask_jwt_extended import jwt_required,get_jwt_identity
-from aux_func import is_admin
+from aux_func import is_admin,get_returndate
 from datetime import datetime
-import os
+from init import cache
 from sqlalchemy import desc
 import matplotlib.pyplot as plt
 plt.switch_backend('agg')
@@ -146,7 +146,8 @@ def issue_book(id,bookid):
         return jsonify({'message':'This Book is already issued to someone.'}),404
     date_str=request.json.get('doi')
     doi=datetime.strptime(date_str,'%Y-%m-%d').date()
-    new=Issued(id=id,bookid=bookid,doi=doi)
+    dor=get_returndate(doi)
+    new=Issued(id=id,bookid=bookid,doi=doi,dor=dor)
     availablity.available=False
     db.session.add(new)
     db.session.delete(requested)
@@ -168,7 +169,8 @@ def get_issued():
             'username':user.username,
             'bookid':x.bookid,
             'book':book.name,
-            'doi':x.doi
+            'doi':x.doi,
+            'dor':x.dor
         }
         response.append(x)
     return jsonify(response),200
@@ -282,6 +284,7 @@ def ban_user(id):
 @admin.route('/test')
 @jwt_required()
 @is_admin
+@cache.cached(timeout=2)
 def avg_ratings():
     books=Books.query.all()
     comments=Review.query.order_by(desc(Review.rating)).limit(5)

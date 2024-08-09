@@ -10,6 +10,7 @@ const myBooks = Vue.component('myBooks',{
                 <th>Book ID</th>
                 <th>Book</th>
                 <th>Issue Date</th>
+                <th>Return Date</th>
                 <th>Actions</th>
             </tr>
             <tr v-for="issue in this.myBooks" :key="issue.issueid">
@@ -18,6 +19,7 @@ const myBooks = Vue.component('myBooks',{
                 <td>{{issue.bookid}}</td>
                 <td>{{issue.book}}</td>
                 <td>{{issue.doi}}</td>
+                <td>{{issue.dor}}</td>
                 <td><button class="btn btn-primary" @click="read(issue.bookid)">Read</button><button class="btn btn-danger" @click="ret(issue.bookid)">Return</button></td>
             </tr>
         </table>

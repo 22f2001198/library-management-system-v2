@@ -59,5 +59,6 @@ class Issued(db.Model):
     bookid=db.Column(db.Integer,db.ForeignKey('books.bookid'),nullable=False)
     id=db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
     doi=db.Column(db.Date,default=datetime.date.today())
+    dor=db.Column(db.Date)
     books=db.relationship('Books',back_populates='issued')
     user=db.relationship('User',back_populates='issued')

@@ -23,3 +23,11 @@ created search for both admin and users.
 created rate and request books for users.
 completed admin and user functionalities.
 created homepages for user and admin respectively.
+completed backend schedule jobs and user triggered async export.
+# for proper functioning of scheduled and async backend jobs
+open 4 separate wsl terminals and run with respective commands-
+terminal 1 runs flask app [python3 app.py]
+terminal 2 runs celery workers [celery -A app:celery_app worker -l INFO]
+terminal 3 runs mailhog [~/go/bin/MailHog]
+terminal 4 runs celery beat (schedule tasks) [celery -A app:celery_app beat -l INFO]
+# completed the development.
