@@ -3,7 +3,7 @@ const adminReport = Vue.component('adminReport',{
     <div class="container">
         <h1>Get Report:</h1>
         <div class="text-center">
-            <button class="btn btn-primary" @click="view">Write</button>
+            <button class="btn btn-primary" @click="view">View</button>
             <button class="btn btn-success" @click="download">Download</button>
         </div>
         <div v-if="this.visiblity">
@@ -33,7 +33,6 @@ const adminReport = Vue.component('adminReport',{
     data(){
         return{
             visibility:false,
-            header:[],
             content:[]
         }
     },

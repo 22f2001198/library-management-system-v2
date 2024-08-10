@@ -67,7 +67,6 @@ const userDetails = {
                         <tr>
                             <th>ID</th>
                             <th>User ID</th>
-                            <th>Username</th>
                             <th>Book ID</th>
                             <th>Book</th>
                             <th>Issue Date</th>
@@ -75,7 +74,6 @@ const userDetails = {
                         <tr v-for="issue in this.issued" :key="issue.issueid">
                             <td>{{issue.issueid}}</td>
                             <td>{{issue.id}}</td>
-                            <td>{{issue.username}}</td>
                             <td>{{issue.bookid}}</td>
                             <td>{{issue.book}}</td>
                             <td>{{issue.doi}}</td>

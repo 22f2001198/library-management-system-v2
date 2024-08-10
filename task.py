@@ -1,6 +1,7 @@
 from celery import shared_task
 from models import *
 import csv
+import datetime
 from flask import jsonify
 from aux_func import today
 from mail import *
@@ -35,38 +36,37 @@ def async_job():
                 'author':book.author
             }
             content.append(issue)
-    return jsonify({'header':header,'content':content})
+    return jsonify(content),200
 
 @shared_task
 def daily_reminder():
     users=User.query.all()
     for user in users:
-        issues=Issued.query.filter(user.id==Issued.id).all()
-        for issue in issues:
-            date_diff=today-issue.dor
-            if date_diff.days<=1:
-                to=user.email
-                sub='LMS V2 warning'
-                template=Template('''
-                Dear user {{user}},<br>
-                You have a return date approaching.<br>
-                Please visit and return the concerned book.<br>
-                Regards <br>
-                LMS Team.
-                ''')
-                body=template.render(user=user.username)
-            else:
-                to=user.email
-                sub='LMS V2 reminder'
-                template=Template('''
-                Dear user {{user}},<br>
-                Please visit and check the latest and most popular books.<br>
-                Regards <br>
-                LMS Team.
-                ''')
-                body=template.render(user=user.username)
-    send_email(to,sub,body)
-    return 'OK'
+        to=user.email
+        sub='Daily remainder LMS-V2'
+        body=Template('''
+                     <h6>Daily Reminder</h6>
+                     <p>Dear User,<br>You have not visited LMS today.<br>Please, visit and check out Lastest and Most Poular books.<br>Regards<br>LMS Team.
+        ''').render()
+        send_email(to,sub,body)
+        return "ok"
+
+@shared_task
+def send_warning():
+    issues=Issued.query.all()
+    for issue in issues:
+        if issue.dor>=today:
+            user=User.query.get(issue.id)
+            to=user.email
+            sub='Book Return reminder'
+            body=Template('''
+                         <h6>Daily Reminder</h6>
+                         <p>Dear User,<br>You have not returned issued book(s) on the return date.<br>Please, visit and return the book(s) as soon as possible.<br>Regards<br>LMS Team.
+            ''').render()
+            send_email(to,sub,body)
+            return 'ok'
+        else:
+            return 'ok'
 
 @shared_task
 def monthly_report():
